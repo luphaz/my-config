@@ -1,0 +1,9 @@
+[core]
+	editor = code --wait
+	ignorecase = false
+
+[diff]
+    tool = default-difftool
+
+[difftool "default-difftool"]
+    cmd = code --wait --diff $LOCAL $REMOTE
