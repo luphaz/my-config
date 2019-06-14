@@ -27,6 +27,18 @@ alias d=docker
 # Used to run git shortly
 alias g=git
 
+# Used to create a github pull request
+alias gpr="hub pull-request"
+
+# Create a pull request using first commit message
+alias gprf="hub pull-request --no-edit"
+
+# Create a pull request using last commit message
+alias gprl='hub pull-request -m "$(git log -1 --pretty=%B)"'
+
+# Alias to open last stdout stuff
+alias ol="open !!"
+
 # Used to rebase origin/master into current branch
 alias grom="git rebase origin/master"
 
