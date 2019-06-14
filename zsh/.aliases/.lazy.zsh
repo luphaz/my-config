@@ -7,7 +7,7 @@ alias c="code ."
 alias cr="sudo code --user-data-dir='~/.vscode-root' /etc/hosts"
 
 # Used to edit quickly zshrc into VSCode
-alias ez="code ~/.zshrc ~/.aliases.zsh"
+alias ez="code ~/.zshrc ~/.aliases/"
 
 # Used to open wercker into browser for current repo
 ow() {open "https://app.wercker.com/ricardo-ch/$(basename `git rev-parse --show-toplevel`)/runs"}
