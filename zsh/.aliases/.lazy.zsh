@@ -3,6 +3,9 @@
 # Used to edit current directory into VSCode, yes I'm lazy
 alias c="code ."
 
+# Used to edit a file as root, only for /etc/hosts, avoid using too much root power
+alias cr="sudo code --user-data-dir='~/.vscode-root' /etc/hosts"
+
 # Used to edit quickly zshrc into VSCode
 alias ez="code ~/.zshrc ~/.aliases.zsh"
 
