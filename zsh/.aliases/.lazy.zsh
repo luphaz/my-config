@@ -70,10 +70,10 @@ alias kctx="kubectx"
 alias kns="kubens"
 
 # Switch to dev context
-alias kdev="kctx dev"
+alias kdev="kctx dev-honey"
 
 # Switch to prod context
-alias kprod="kctx prod"
+alias kprod="kctx prod-cherry"
 
 # Force grep color and insensitive by default
 alias grep='grep --color -i'
