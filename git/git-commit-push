@@ -5,4 +5,4 @@
 	gpgsign = true
 
 [gpg]
-	program = gpg
+	program = gpg2
