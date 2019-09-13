@@ -64,7 +64,7 @@ alias kctx="kubectx"
 alias kns="kubens"
 
 # Switch to dev context
-alias kdev="kctx dev-honey"
+alias kdev="kctx dev-cookie"
 
 # Switch to prod context
 alias kprod="kctx prod-cherry"
