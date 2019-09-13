@@ -9,9 +9,10 @@ _rdp() {
   remaining_try=10
   last_exit_code="1"
 
-  echo "Creating tunnel to project=$project zone=$zone vm=$vm port=$port"
+  runningstuff="gcloud beta compute start-iap-tunnel $vm 3389 --local-host-port=localhost:$port --project=$project --zone=$zone &"
 
-  gcloud beta compute start-iap-tunnel --project $project --zone $zone "$vm" 3389 --local-host-port=localhost:$port
+  echo "Creating tunnel using ${runningstuff}"
+  eval ${runningstuff} 
 
   # Wait some time before first try
   sleep $try_sleep
@@ -29,17 +30,34 @@ _rdp() {
   done
 
   apple_script=$(cat <<==apple_script
+# First let's go to the desktop 1 using keyboard shortcut ^1 :
+tell application "System Events"
+    key code 18 using (control down)
+end tell
+
+# Now that we are here, happily on this desktop, maybe empty, maybe not
+# We can activate the proper window of Microsoft Remote Desktop Beta
+# This assume you are using like the non full window version of "Microsoft Remote Desktop Beta"
 tell application "Microsoft Remote Desktop Beta"
   activate
+
   tell application "System Events"
     set frontmost of process "Microsoft Remote Desktop Beta" to true
+
+    # Here is the thing, now that we have this awesome window activated
+    # Let's just search using COMMAND+DOWN
+    # And search for the VM name
+    # Wait a bit because... search is not instant
+    # Select and go into the VM
+    # \o/\o/\o/\o/\o/\o/\o/\o/\o/\o/\o/
+
     tell process "Microsoft Remote Desktop Beta"
       keystroke "f" using {command down}
       keystroke "$vm" --search query
       delay 0.5
       keystroke tab
       key code 125 -- down
-      key code 36 --enter		
+      key code 36 -- enter
     end tell
   end tell
 end tell
