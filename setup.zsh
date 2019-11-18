@@ -29,3 +29,27 @@ for file in $abs_zsh/.scripts/*(.); echo "symlink $file to /usr/local/bin/${file
 echo "-----------------------------------------------------------------------"
 echo "END SETUP ZSH "
 echo "-----------------------------------------------------------------------"
+
+
+echo "-----------------------------------------------------------------------"
+echo "BEGIN SETUP VIM "
+
+abs_vim=$(pwd)/vim
+
+echo "-----------------------------------------------------------------------"
+echo "symlink vim to ~/.vim"
+[  -d ~/.vim ] && [ ! -h ~/.vim ] && mv ~/.vim ~/.vim.backup
+[ ! -h ~/.vim ] && ln -s $abs_vim ~/.vim
+echo "~/.vim is linked to"
+readlink ~/.vim
+
+echo "-----------------------------------------------------------------------"
+echo "symlink vim/vimrc to ~/.vimrc"
+[ ! -h ~/.vimrc ] && [ -f ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.backup
+[ ! -h ~/.vimrc ] && ln -s $abs_vim/vimrc ~/.vimrc
+echo "~/.vimrc is linked to"
+readlink ~/.vimrc
+
+echo "-----------------------------------------------------------------------"
+echo "END SETUP VIM "
+echo "-----------------------------------------------------------------------"
