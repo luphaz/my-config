@@ -152,7 +152,7 @@ export KUBE_EDITOR="code --wait"
 export ENVIRONMENT=DEV
 
 # Source all aliases available into folder
-for file in ~/.aliases/.*.zsh; source $file
+for file in ~/.aliases/*.zsh; source $file
 
 # Fuzzy finding configuration if exists
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
