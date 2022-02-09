@@ -1,6 +1,9 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
 
@@ -54,6 +57,13 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Those plugins can be installed using brew install
+# Let's direclty source them here to ensure this configuration is as portable as possible
+# They should not been referenced into the standard oh-my-zsh plugins below
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source /usr/local/share/zsh/site-functions
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
@@ -62,19 +72,11 @@ plugins=(
 
   git
   kubectl
+  helm
   docker
-
-  # Provide nice auto-complete from zsh history, avoid to retype command twice
-  zsh-autosuggestions
-
-  # Green when binary exists, red if not
-  zsh-syntax-highlighting
 
   # dcup \o/
   docker-compose
-
-  # g open
-  git-open
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -121,41 +123,80 @@ POWERLEVEL9K_SHORTEN_DIR_LENGTH=1
 POWERLEVEL9K_SHORTEN_DELIMITER=""
 POWERLEVEL9K_SHORTEN_STRATEGY="truncate_from_right"
 
+# Add asdf from brew BEFORE any aliases
+export ASDF_DIR=/usr/local/Cellar/asdf/0.9.0/libexec
+[ -f $(brew --prefix asdf)/asdf.sh ] && source $(brew --prefix asdf)/asdf.sh
+
+# GITPATH private location hidden
+export GITPATH=~/Git
+
+# Useful for gotools through asdf
+if [[ -z "${GOROOT}" ]]; then
+  GOV=$(asdf where golang)
+  if [[ "$GOV" != "Version not installed" ]]; then
+    export GOROOT="$GOV/go"
+  fi
+fi
+
 # GOPATH to store vendor into
-export GOPATH=~/Git/go
+export GOPATH="${GITPATH}/Go"
+
 # Go shortcut to jump
-export GORIC=$GOPATH/src/github.com/ricardo-ch/
-# Useful for I don't remember what
-export GOROOT="/usr/local/opt/go/libexec"
+export GOPERSO="${GOPATH}/src/github.com/luphaz/"
+
+# Source all aliases available into folder
+for file in ~/.aliases/*.zsh; do source "${file}"; done
+
+prepend_path() {
+  if [[ ! "${PATH}" =~ $1 ]]; then
+    PATH="$1:$PATH"
+  fi
+}
 
 # https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md
 export NPM_PACKAGES="${HOME}/.npm-packages"
+prepend_path "${NPM_PACKAGES}/bin"
 unset MANPATH
 export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 
 # Path concatenation, because path is never enough
-export PATH="${PATH}:/usr/local/opt/node@10/bin:${NPM_PACKAGES}/bin:${GOPATH}/bin:/usr/local/bin/kafka/bin:/usr/local/bin/google-cloud-sdk/bin"
+# export PATH="/usr/local/opt/gnu-getopt/bin:/usr/local/opt/python@3.7/bin:${PATH}:${NPM_PACKAGES}/bin:${GOPATH}/bin"
+prepend_path "${GOPATH}/bin:/usr/local/opt/gnu-getopt/bin"
+
+# PROTOBUF RELATED CONFIGURATION
+# If you need to have protobuf@3.6 first in your PATH, run:
+prepend_path "/usr/local/opt/protobuf@3.6/bin"
+
+# Used for mssh (EC2InstanceConnect)
+prepend_path "/Users/matthieu.bono.heetch/Library/Python/3.8/bin"
+
+# For compilers to find protobuf@3.6 you may need to set:
+export LDFLAGS="-L/usr/local/opt/protobuf@3.6/lib"
+export CPPFLAGS="-I/usr/local/opt/protobuf@3.6/include"
+
+#For pkg-config to find protobuf@3.6 you may need to set:
+export PKG_CONFIG_PATH="/usr/local/opt/protobuf@3.6/lib/pkgconfig"
 
 # Awesome trick to auto-complete directory you go often, any directory behind Git/Go/Home is just one `cd dir-name` aways
-cdpath=($HOME $GORIC ~/Git)
-
-# Yeah kind of a backup
-export OLDGIT=~/Old/Git
+GITWORKTREES="$HOME/Git/worktrees"
+cdpath=($HOME $GITPATH $GOCOMPANY $GOPERSO $GODRONE $GITWORKTREES)
 
 # Useful to speedup docker at some point
-export NO_PROXY=*
+#export NO_PROXY=*
 
-# Prefer VSCode to edit kubectl files
-export KUBE_EDITOR="code --wait"
+# Ensure apps run using dev configuration by default
+export ENVIRONMENT=development
+export KUBE_EDITOR='code --wait'
 
-# Ensure apps run using dev configuration lby default
-export ENVIRONMENT=DEV
-
-# Source all aliases available into folder
-for file in ~/.aliases/*.zsh; source $file
+# let's have some color when diffing Kubernetes files through kubectl diff...
+# export KUBECTL_EXTERNAL_DIFF="colordiff  --side-by-side --suppress-common-lines"
+export KUBECTL_EXTERNAL_DIFF="dyff between --omit-header --set-exit-code"
 
 # Fuzzy finding configuration if exists
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Stern is useful to concatenate k8s logs
-source <(stern --completion=zsh)
+# source <(stern --completion=zsh)
+
+# iterm2 default keybindings sucks, use info provided here to update the keybinding to a more natural one (if it suits you of course)
+# https://gist.github.com/kevin-smets/8568070

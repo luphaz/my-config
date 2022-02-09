@@ -1,4 +1,4 @@
-#!/bin/zsh -ex
+#!/usr/bin/env zsh -ex
 
 _rdp() {
   project=$1
@@ -12,7 +12,7 @@ _rdp() {
   runningstuff="gcloud beta compute start-iap-tunnel $vm 3389 --local-host-port=localhost:$port --project=$project --zone=$zone &"
 
   echo "Creating tunnel using ${runningstuff}"
-  eval ${runningstuff} 
+  eval ${runningstuff}
 
   # Wait some time before first try
   sleep $try_sleep
@@ -24,7 +24,7 @@ _rdp() {
     nc -vz 127.0.0.1 $port
     last_exit_code="$?"
     echo "Last exit code $last_exit_code"
-    
+
     # Wait some time before next try
     sleep $try_sleep
   done
@@ -64,6 +64,5 @@ end tell
 ==apple_script
 )
 
-  echo -e "$apple_script" | osascript 
+  echo -e "$apple_script" | osascript
 }
-
